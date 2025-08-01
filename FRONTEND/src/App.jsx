@@ -4,6 +4,7 @@ import Login from "./components/Loginform";
 import Registerform from "./components/Registerfrom";
 import Dashboardpage from "./pages/Dashboardpage";
 import PrivateRoute from "./components/PrivateRoute";
+import UrlRedirect from "./components/UrlRedirect";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           }
         />
         <Route path="/" element={<Login />} />
+        <Route path="/:shortCode" element={<UrlRedirect />} />
       </Routes>
     </Router>
   );

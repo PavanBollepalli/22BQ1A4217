@@ -2,8 +2,7 @@ import React from 'react'
 import { FaLink, FaChartLine, FaClock, FaUser } from 'react-icons/fa'
 import Navbar from '../components/Navbar'
 import { useState } from 'react'
-import { getStats } from '../api/user.api'
-import { getRecentUrls } from '../api/shortUrl.api'
+import urlService from '../services/urlService'
 import { useEffect } from 'react'
 
 const Dashboardpage = () => {
@@ -17,33 +16,21 @@ const Dashboardpage = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await getStats();
-        // console.log("Stats response:", response);
-        if (response.data) {
-          setStats(response.data);
-        }
+        // Get data from our local service
+        const allUrls = urlService.getAllUrls();
+        const totalUrls = allUrls.length;
+        const totalClicks = allUrls.reduce((sum, url) => sum + url.clicks, 0);
+        
+        setStats({ totalUrls, totalClicks });
+        setRecent(allUrls.slice(-5).reverse()); // Get last 5 URLs
       } catch (error) {
         console.error("Failed to fetch stats:", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchStats();
-    const fetchRecentUrls = async () => {
-      try {
-        const response = await getRecentUrls();
-        // console.log("recent Urls response:", response);
-        if (response.data) {
-          setRecent(response.data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch RecentUrls:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     
-    fetchRecentUrls();
+    fetchStats();
   }, []);
 
   const statCards = [
